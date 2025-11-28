@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fly360 Project Page</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Custom scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Icons (Inline SVGs to replace lucide-react) ---
+        const IconFileText = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+        );
+        const IconGithub = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        );
+        const IconYoutube = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+        );
+        const IconDownload = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        );
+        const IconPlay = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        );
+        const IconArrowRight = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        );
+        const IconDrone = ({ size = 40, className = "" }) => (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M4 4l4 4M16 4l4 4M4 20l4-4M20 20l-4-4" />
+            <line x1="12" y1="3" x2="12" y2="7" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+            <line x1="3" y1="12" x2="7" y2="12" />
+            <line x1="17" y1="12" x2="21" y2="12" />
+        </svg>
+        );
+        // --- Components ---
+
+        const Button = ({ children, icon, href, primary = false }) => (
+            <a
+                href={href || "#"}
+                className={`inline-flex items-center px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
+                primary
+                    ? 'bg-gray-900 text-white hover:bg-gray-700 shadow-lg hover:shadow-xl'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200'
+                }`}
+            >
+                {icon && <span className="mr-2">{icon}</span>}
+                {children}
+            </a>
+        );
+
+        const Section = ({ title, children, className = "", id = "" }) => (
+            <div id={id} className={`py-12 ${className}`}>
+                <div className="max-w-4xl mx-auto px-4 sm:px-6">
+                <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">{title}</h2>
+                {children}
+                </div>
+            </div>
+        );
+
+        const VideoPlaceholder = ({ label, height = "h-64" }) => (
+            <div className={`w-full ${height} bg-gray-200 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-300 opacity-50"></div>
+                <div className="text-gray-400 opacity-80 group-hover:scale-110 transition-transform duration-300">
+                    <IconPlay size={64} className="fill-gray-400 stroke-none" />
+                </div>
+                <span className="mt-4 text-gray-500 font-medium z-10 bg-white/80 px-4 py-1 rounded-full backdrop-blur-sm">
+                {label || "Video Placeholder"}
+                </span>
+                <span className="absolute bottom-2 right-2 text-xs text-gray-400">Replace with your video/GIF</span>
+            </div>
+        );
+
+        const ImagePlaceholder = ({ label, height = "h-64" }) => (
+            <div className={`w-full ${height} bg-blue-50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-blue-200 relative overflow-hidden`}>
+                <div className="text-blue-300 mb-2">
+                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <span className="text-blue-400 font-medium">{label || "Image Placeholder"}</span>
+            </div>
+        );
+
+        const App = () => {
+            const [isScrolled, setIsScrolled] = React.useState(false);
+
+            React.useEffect(() => {
+                const handleScroll = () => {
+                    setIsScrolled(window.scrollY > 50);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <div className="min-h-screen bg-white text-gray-800 font-sans selection:bg-blue-100">
+                
+                {/* Navigation */}
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
+                    <div className="max-w-6xl mx-auto px-4 flex justify-between items-center">
+                    <a href="#" className="text-xl font-bold text-gray-900 tracking-tighter">Fly360</a>
+                    <div className="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                        <a href="#abstract" className="hover:text-blue-600 transition-colors">Abstract</a>
+                        <a href="#method" className="hover:text-blue-600 transition-colors">Method</a>
+                        <a href="#results" className="hover:text-blue-600 transition-colors">Results</a>
+                        <a href="#bibtex" className="hover:text-blue-600 transition-colors">BibTeX</a>
+                    </div>
+                    </div>
+                </nav>
+
+                {/* Hero Section */}
+                <div className="pt-32 pb-16 px-4 sm:px-6 max-w-5xl mx-auto text-center">
+                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 mb-6 leading-tight">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Fly360</span>: Omnidirectional UAV Obstacle Avoidance <br className="hidden md:block"/> Based on Unified Panoramic Vision
+                    </h1>
+                    
+                {/* Authors */}
+                <div className="flex flex-wrap justify-center gap-4 text-lg text-gray-700 mb-6">
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    Xiangkai Zhang<sup className="text-sm align-super">1,3</sup>
+                </span>
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    Dizhe Zhang<sup className="text-sm align-super">1</sup>
+                </span>
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    Wenzhuo Cao<sup className="text-sm align-super">1,2</sup>
+                </span>
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    <a href="https://luqi.info/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700">
+                    Lu Qi<sup className="text-sm align-super">1,2</sup>
+                    </a>
+                </span>
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    <a href="https://people.ucas.ac.cn/~xuyang" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700">
+                    Xu Yang<sup className="text-sm align-super">3</sup>
+                    </a>
+                </span>
+                <span className="hover:text-blue-700 cursor-pointer transition-colors">
+                    <a href="https://people.ucas.ac.cn/~liuzhiyong" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700">
+                    Zhiyong Liu<sup className="text-sm align-super">3</sup>
+                    </a>
+                </span>
+                </div>
+                {/* Affiliations */}
+                <div className="text-center text-gray-500 mb-10 text-base">
+                <span className="font-medium">
+                    <span className="mx-3">
+                    <sup className="text-sm align-super">1</sup>
+                    <a
+                        href="https://www.insta360.com/cn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600"
+                    >
+                        Insta360 Research
+                    </a>
+                    </span>
+                    <span className="mx-3">
+                    <sup className="text-sm align-super">2</sup>
+                    <a
+                        href="https://whu.edu.cn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600"
+                    >
+                        Wuhan University
+                    </a>
+                    </span>
+                    <span className="mx-3">
+                    <sup className="text-sm align-super">3</sup>
+                    <a
+                        href="https://english.ia.cas.cn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600"
+                    >
+                        Institute of Automation, Chinese Academy of Sciences
+                    </a>
+                    </span>
+                </span>
+                </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap justify-center gap-4 mb-16">
+                    <Button icon={<IconFileText size={18} />} href="#" primary>Paper</Button>
+                    <Button icon={<IconYoutube size={18} />} href="#" primary>Video</Button>
+                    <Button icon={<IconGithub size={18} />} href="#" primary>Code</Button>
+                    </div>
+
+                    {/* Teaser */}
+                    <div className="w-full rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+                    <img src="figs/teaser2_01.jpg"
+                    alt="Fly360"
+                    className="w-full object-contain" />
+                    <p className="mt-4 text-sm text-gray-500 text-left px-4 pb-4 text-justify">
+                        We present <strong>Fly360</strong>,a unified panoramic vision framework for omnidirectional UAV obstacle avoidance. By mapping <strong>360°</strong> RGB inputs to control commands, Fly360 enables safe and agile navigation in complex environments without explicit mapping or special setups. From dynamic crowds to cluttered natural scenes and multi-UAV coordination, our method can achieve omnidirectional awareness and robust flight beyond the limitations of forward-view sensing.
+                    </p>
+                    </div>
+                </div>
+
+                {/* Abstract */}
+                <Section title="Abstract" id="abstract" className="bg-gray-50">
+                    <p className="text-lg text-gray-700 leading-relaxed text-justify">
+                    Unmanned aerial vehicles (UAVs) increasingly require omnidirectional obstacle avoidance for safe operations in constrained and dynamic environments. Most existing methods rely on forward-facing cameras, leaving dangerous blind spots. While multi-camera systems exist, they often incur high calibration and hardware burdens. 
+                    In this work, we present <strong>Fly360</strong>, a unified framework for omnidirectional UAV obstacle avoidance based on panoramic vision. The system directly maps panoramic observations to body-frame velocity commands. We introduce a <strong>fixed random-yaw training strategy</strong> that enables the policy to learn consistent avoidance behaviors under arbitrary flight orientations. Extensive evaluation in simulated environments (Park, Forest, Urban, Forest) and real-world tests demonstrates that Fly360 achieves stable 360° obstacle avoidance and robust sim-to-real transfer, setting a new baseline for panoramic vision-based UAV navigation.
+                    </p>
+                </Section>
+
+                {/* Method */}
+                <Section title="Methodology" id="method">
+                    <div className="grid md:grid-cols-1 gap-8 mb-12 text-justify">
+                    <div className="space-y-4">
+                        <img src="figs/pipeline_01.png"
+                        alt="Fly360"
+                        className="w-full object-contain" />
+                        <div className="text-gray-600 text-sm">
+                        <span className="font-bold text-gray-900">System Pipeline:</span> Panoramic RGB observations are first processed by a panoramic depth estimation network to produce a depth map, which is then downsampled for policy inference. The policy network fuses low-resolution depth with UAV states to predict body-frame velocity commands. Training is conducted in a differentiable simulator while inference executes the predicted commands through the onboard velocity controller and rotor-level control.
+                        </div>
+                    </div>
+                    </div>
+
+                    {/* Block 1 */}
+                    <div>
+                    <h3 className="text-2xl font-bold mb-4 text-justify">Unified Panoramic Perception</h3>
+                    <p className="text-gray-700 leading-relaxed text-justify mb-10">
+                        Unlike traditional modular pipelines, Fly360 unifies perception and control. 
+                        It utilizes a lightweight panoramic depth estimator to convert RGB panoramas 
+                        into compact depth representations. This allows the system to be computationally 
+                        efficient while preserving global geometric context.
+                    </p>
+                    </div>
+
+                    {/* Block 2 */}
+                    <div>
+                    <h3 className="text-2xl font-bold mb-4 text-justify">Fixed Random-Yaw Training</h3>
+                    <p className="text-gray-700 leading-relaxed text-justify mb-10">
+                        To achieve orientation invariance, we propose a novel training strategy. 
+                        Instead of aligning yaw with motion (free-yaw), we initialize the UAV with 
+                        a random fixed yaw in each training episode. This forces the policy to 
+                        reason about 360° geometry and avoid obstacles regardless of the camera's heading.
+                    </p>
+                    </div>
+
+                    
+                    <div className="mt-8 bg-blue-50 p-6 rounded-xl border border-blue-100">
+                    <h4 className="font-bold text-blue-900 mb-2">Key Advantages:</h4>
+                    <ul className="list-disc list-inside text-blue-800 space-y-1">
+                        <li>No need for complex multi-camera calibration.</li>
+                        <li>Eliminates blind spots common in forward-facing systems.</li>
+                        <li>Robust performance in dynamic and cluttered environments.</li>
+                        <li>Sim-to-real transfer capability without fine-tuning.</li>
+                    </ul>
+                    </div>
+                </Section>
+
+                {/* Results - Simulation */}
+                <Section title="Simulation Results" id="results" className="bg-gray-50">
+                    <p className="text-center text-gray-600 max-w-2xl mx-auto mb-10">
+                    We evaluated Fly360 across three challenging tasks: <strong>Hovering Maintenance</strong>, <strong>Dynamic Target Following</strong>, and <strong>Fixed-Trajectory Filming</strong>.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex flex-col space-y-3">
+                        <video src="figs/centerattack/centerattack-1.mp4" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsinline
+                        controls
+                        alt="Hovering Maintenance"
+                        className="w-full object-contain" />
+                        <h4 className="font-bold text-gray-900 text-center">Hovering Maintenance</h4>
+                        <p className="text-sm text-gray-500 text-center">Maintaining position while avoiding dynamic obstacles.</p>
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                        <video src="figs/trackfactory/trackfactory-1.mp4" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsinline
+                        controls
+                        alt="Dynamic Target Following"
+                        className="w-full object-contain" />
+                        <h4 className="font-bold text-gray-900 text-center">Dynamic Target Following</h4>
+                        <p className="text-sm text-gray-500 text-center">Tracking a moving subject while reacting to obstacles.</p>
+                    </div>
+                    <div className="flex flex-col space-y-3">
+                        <video src="figs/forest.mp4" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsinline
+                        controls
+                        alt="Fixed-trajectory filming"
+                        className="w-full object-contain" />
+                        <h4 className="font-bold text-gray-900 text-center">Fixed-trajectory filming</h4>
+                        <p className="text-sm text-gray-500 text-center">Following a predefined path around a target poition while maintaining camera orientation.</p>
+                    </div>
+                    </div>
+
+
+                    {/* Quantitative Results */}
+                    <div className="mt-16">
+                    <h3 className="text-xl font-bold text-center mb-6">Quantitative Results</h3>
+
+                    <div className="flex justify-center">
+                        <div className="max-w-3xl w-full rounded-2xl overflow-hidden shadow-md bg-white p-4">
+                        <img
+                            src="figs/table.png"  
+                            alt="Quantitative Results Table"
+                            className="w-full object-contain"
+                        />
+                        </div>
+                    </div>
+
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                        Comparison of performance metrics across challenging navigation tasks.
+                    </p>
+                    </div>
+
+                    <div className="mt-12">
+                        <h3 className="text-xl font-bold text-center mb-6">Qualitative Comparison</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-white p-4 rounded-xl shadow-sm">
+                                <div className="text-center font-semibold mb-2 text-red-500">Baseline (Forward-View)</div>
+                                <video
+                                src="figs/single.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-48 object-cover rounded-lg"
+                                controls
+                                />
+                                <p className="text-xs text-gray-500 mt-2 p-2">Fails to see obstacles from the side/rear, leading to collisions.</p>
+                            </div>
+                            <div className="bg-white p-4 rounded-xl shadow-sm">
+                                <div className="text-center font-semibold mb-2 text-green-500">Ours (Fly360)</div>
+                                <video
+                                src="figs/trackfactory/trackfactory-1.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-48 object-cover rounded-lg"
+                                controls
+                                />
+                                <p className="text-xs text-gray-500 mt-2 p-2">Successfully perceives and avoids obstacles from all directions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+
+
+
+
+                {/* Results - Real World */}
+                <Section title="Real-World Deployment" className="bg-white">
+                <p className="text-gray-700 text-justify leading-relaxed mb-4">
+                    We deployed Fly360 on a custom quadrotor equipped with two fisheye cameras stitched to form 
+                    a panoramic view. The model trained purely in simulation is directly transferred to real 
+                    drones without finetuning.
+                </p>
+
+                <div className="flex flex-col md:flex-row justify-center gap-6 text-gray-600 mb-6">
+                    <div className="flex items-center gap-2">
+                    <IconArrowRight size={20} className="text-blue-500" />
+                    <span>Hardware: Snapdragon 855 Quadrotor</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                    <IconArrowRight size={20} className="text-blue-500" />
+                    <span>2× Fisheye Cameras (Stitched 360°)</span>
+                    </div>
+                </div>
+
+                {/* ⬇ 把原来的 grid 改成这个 ⬇ */}
+                <div className="overflow-x-auto pb-2">
+                    <div className="flex gap-6">
+                    {/* Card 1 */}
+                    <div className="flex-none w-72 md:w-1/3 flex flex-col space-y-3">
+                        <video
+                        src="figs/demo1.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-40 md:h-48 object-cover rounded-xl shadow"
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                        The UAV safely avoids a human approaching from the back.
+                        </p>
+                    </div>
+
+                    {/* Card 2 */}
+                    <div className="flex-none w-72 md:w-1/3 flex flex-col space-y-3">
+                        <video
+                        src="figs/demo2.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-40 md:h-48 object-cover rounded-xl shadow"
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                        The UAV safely avoids a human approaching from the front.
+                        </p>
+                    </div>
+
+                    {/* Card 3 */}
+                    <div className="flex-none w-72 md:w-1/3 flex flex-col space-y-3">
+                        <video
+                        src="figs/demo3.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-40 md:h-48 object-cover rounded-xl shadow"
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                        UAV avoids collisions and returns to its target hover position.
+                        </p>
+                    </div>
+
+                    {/* Card 4 */}
+                    <div className="flex-none w-72 md:w-1/3 flex flex-col space-y-3">
+                        <video
+                        src="figs/demo4.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-40 md:h-48 object-cover rounded-xl shadow"
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                        UAV avoids collisions and returns to its target hover position.
+                        </p>
+                    </div>
+                  
+
+                    {/* Card 6 */}
+                    <div className="flex-none w-72 md:w-1/3 flex flex-col space-y-3">
+                        <video
+                        src="figs/demo6.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-40 md:h-48 object-cover rounded-xl shadow"
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                        The UAV safely avoids a human approaching from the side.
+                        </p>
+                    </div>
+
+
+                    {/* 以后如果要加更多视频，就在这里继续加同样的卡片 */}
+                    </div>
+                </div>
+                {/* ⬆ 到这里为止是改动部分 ⬆ */}
+                
+
+
+                {/* 视频区域：整行双栏宽度 */}
+                <div className="w-full mb-10">
+                    <div className="aspect-video w-full overflow-hidden rounded-2xl shadow-2xl border border-gray-200">
+                    <video
+                        src="figs/demo7.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controls
+                        className="w-full h-full object-cover"
+                    />
+                    </div>
+                    <p className="text-sm text-gray-500 text-center mt-2">
+                    A challenging scenario in which a human continuously pursues the UAV, which 
+                    demonstrates the UAV's ability to consistently evade a dynamic human target.
+                    </p>
+                </div>
+
+                </Section>
+
+                {/* BibTeX */}
+                <Section title="BibTeX" id="bibtex" className="bg-gray-50">
+                    <div className="relative group">
+                        <pre className="bg-gray-800 text-gray-300 p-6 rounded-xl overflow-x-auto text-sm font-mono leading-relaxed">
+                        {`@article{fly360_2026,
+title={Fly360: Omnidirectional UAV Obstacle Avoidance Based on Unified Panoramic Vision},
+author={Anonymous Authors},
+journal={CVPR Submission},
+year={2026}
+}`}
+</pre>
+                        <button 
+                            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-2 rounded transition-colors"
+                            onClick={() => navigator.clipboard.writeText(`@article{fly360_2026,\n  title={Fly360: Omnidirectional UAV Obstacle Avoidance Based on Unified Panoramic Vision},\n  author={Anonymous Authors},\n  journal={CVPR Submission},\n  year={2026}\n}`)}
+                        >
+                            Copy
+                        </button>
+                    </div>
+                </Section>
+
+                {/* Footer */}
+                <footer className="py-8 text-center text-gray-400 text-sm bg-gray-900">
+                    <p>&copy; 2026 Fly360 Project. All rights reserved.</p>
+                    <p className="mt-2">Template based on modern academic project pages.</p>
+                </footer>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
